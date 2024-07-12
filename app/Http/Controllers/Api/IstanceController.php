@@ -72,8 +72,11 @@ public function status(Request $request)
     // Log the incoming request
     Log::info('Received status request:', ['request' => $jsonString]);
 
+    // Remove control characters from the JSON string
+    $jsonStringCleaned = preg_replace('/[\x00-\x1F\x7F]/u', '', $jsonString);
+
     // Decodifica la stringa JSON in un array associativo
-    $data = json_decode($jsonString, true);
+    $data = json_decode($jsonStringCleaned, true);
 
     // Check if json_decode was successful
     if (json_last_error() !== JSON_ERROR_NONE) {
