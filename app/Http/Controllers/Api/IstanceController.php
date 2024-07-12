@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Log;
 
 use Illuminate\Support\Facades\DB;
 
@@ -64,36 +65,59 @@ class IstanceController extends Controller
 }
      
 public function status(Request $request)
-    {
-        // Leggi il license_key dal body della richiesta POST
-        $license_key = $request->input('license_key');
-        $varsion = $request->input('version');
+{
+    // Leggi il contenuto della richiesta come stringa JSON
+    $jsonString = $request->getContent();
 
-        // Cerca il record con license_key uguale a $license_key
-        $istance = DB::table('istances')->where('license_key', $license_key)->first();
+    // Log the incoming request
+    Log::info('Received status request:', ['request' => $jsonString]);
 
-        // Controlla se il record esiste
-        if ($istance) {
-            // Aggiorna la colonna status a true e last_contact con la data attuale
-            DB::table('istances')->where('license_key', $license_key)->update([
-                'status' => true,
-                'last_contact' => Carbon::now(), // Usa Carbon per ottenere la data attuale
-                'version' => $varsion
-            ]);
+    // Decodifica la stringa JSON in un array associativo
+    $data = json_decode($jsonString, true);
 
-            return response()->json([
-                'success' => true,
-                'message' => 'Status and last_contact updated successfully.',
-                'istance' => $istance
-            ]);
-        } else {
-            // Se il record non esiste, ritorna un messaggio di errore
-            return response()->json([
-                'success' => false,
-                'message' => 'Istance not found.'
-            ], 404);
-        }
+    // Estrai il license_key e la version dall'array associativo
+    $license_key = $data['license_key'] ?? null;
+    $version = $data['version'] ?? null;
+
+    // Controlla se license_key è presente
+    if (!$license_key) {
+        Log::warning('License key is missing in the request.');
+
+        return response()->json([
+            'success' => false,
+            'message' => 'License key is required.'
+        ], 400);
     }
+
+    // Cerca il record con license_key uguale a $license_key
+    $istance = DB::table('istances')->where('license_key', $license_key)->first();
+
+    // Controlla se il record esiste
+    if ($istance) {
+        // Aggiorna la colonna status a true e last_contact con la data attuale
+        DB::table('istances')->where('license_key', $license_key)->update([
+            'status' => true,
+            'last_contact' => Carbon::now(), // Usa Carbon per ottenere la data attuale
+            'version' => $version
+        ]);
+
+        Log::info('Status and last_contact updated successfully for license key: ' . $license_key);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Status and last_contact updated successfully.',
+            'istance' => $istance
+        ]);
+    } else {
+        Log::error('Istance not found for license key: ' . $license_key);
+
+        // Se il record non esiste, ritorna un messaggio di errore
+        return response()->json([
+            'success' => false,
+            'message' => 'Istance not found.'
+        ], 404);
+    }
+}
 
 /**
  * Genera una stringa casuale di lunghezza specificata.
