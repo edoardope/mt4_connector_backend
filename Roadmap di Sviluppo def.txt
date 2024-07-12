@@ -1,0 +1,214 @@
+Roadmap di Sviluppo
+
+Milestone	Tempistiche	Obiettivi
+Introlavori Front-end	5 giorni	•	Login e Registrazione (2 giorni)
+•	Pagamento Integrato (2 giorni)
+•	Broker Connection (1 giorno)
+Main Structure Front-end	20 giorni	•	Site Nav + Home Page (5 giorni)
+•	Report (2 giorni)
+•	Strategies (5 giorni)
+•	Profile (2 giorni)
+•	Settings (2 giorni)
+•	Notify (2 giorni)
+•	Creators (2 giorni)
+Mobile Transition Front-end	14 giorni	•	Adattazione Navbar a Mobile (1 giorno)
+•	Adattazione Home Page a Mobile (2 giorni)
+•	Adattazione Strategy a Mobile (5 giorni)
+•	Adattazione Profile a Mobile (1 giorno)
+•	Adattazione Settings a Mobile (1 giorno)
+•	Adattazione Notify a Mobile (1 giorno)
+•	Adattazione Creators a Mobile (1 giorno)
+•	Login e Registrazione: Adattazione Mobile (1 giorno)
+•	Broker Connection: Adattazione Mobile (1 giorno)
+Back-end	37 giorni	•	Backend Login e Register (5 giorni)
+•	Broker Connection (2 giorni)
+•	Stripe Abbonamento (5 giorni)
+•	API per Account Data (5 giorni)
+•	API per Grafici (5 giorni)
+•	Data Model Preparation (5 giorni)
+•	API Operazioni (5 giorni)
+•	API Selected Strategy (5 giorni)
+Interaction between Front-end and Back-end	17 giorni	•	Dash (3 giorni)
+•	Report (1 giorno)
+•	Strategy (5 giorni)
+•	Profile (2 giorni)
+•	Settings (2 giorni)
+•	Notify (2 giorni)
+•	Obiettivo Redefinements and Extra Features (10 giorni)
+Refinements	10 giorni	•	Refinements and Extra Features (10 giorni)
+Testing	10 giorni	•	Testing (10 giorni)
+
+
+
+
+
+
+
+
+Previsione Conclusione Lavori
+
+Milestone	Data di Inizio	Data di Fine	Tempistiche
+Introlavori Front-end	1 giugno 2024	5 giugno 2024	5 giorni
+Main Structure Front-end	6 giugno 2024	25 giugno 2024	20 giorni
+Mobile Transition Front-end	26 giugno 2024	9 luglio 2024	14 giorni
+Back-end	1 giugno 2024 (Parallelo)	7 luglio 2024	37 giorni
+Interaction between Front-end and Back-end	10 luglio 2024	26 luglio 2024	17 giorni
+Refinements	27 luglio 2024	5 agosto 2024	10 giorni
+Testing	6 agosto 2024	15 agosto 2024	10 giorni
+
+
+
+
+
+
+
+
+
+
+
+
+Allocazione Budget per Fig. Esterna
+
+Descrizione	Quantità
+Budget Disponibile	3.000 €
+Giornate Totali che il Budget Copre	25 giorni
+Giornate Totali Front-end (Prime 3 Milestones)	39 giorni
+Giornate Front-end non coperte	14 giorni
+Giornate Back-end (Milestone 4 in poi)	74 giorni
+Disponibilità Main Dev (12 g/mese x 4 mesi)	48 giorni
+Giornate Back-end e Testing non coperte	26 giorni
+
+
+Previsione Chiusura Lavori
+
+Descrizione	Quantità
+Giornate Non Coperte Totali (Front-end e Back-end)	40 giorni (14 Front-end + 26 Back-end)
+Mesi Extra per Giornate Non Coperte	40 / 12 = 3.33 mesi
+Data Prevista di Chiusura	15 agosto 2024 + 3.33 mesi ≈ fine novembre 2024
+
+
+V2:
+
+Roadmap di Sviluppo
+Milestone	Tempistiche	Obiettivi
+Introlavori Front-end	5 giorni	•	Login e Registrazione (2 giorni)
+•	Pagamento Integrato (2 giorni)
+•	Broker Connection (1 giorno)
+Main Structure Front-end	18 giorni	•	Site Nav + Home Page (5 giorni)
+•	Report (2 giorni)
+•	Strategies (5 giorni)
+•	Profile (2 giorni)
+•	Settings (2 giorni)
+•	Creators (2 giorni)
+Mobile Transition Front-end	13 giorni	•	Adattazione Navbar a Mobile (1 giorno)
+•	Adattazione Home Page a Mobile (2 giorni)
+•	Adattazione Strategy a Mobile (5 giorni)
+•	Adattazione Profile a Mobile (1 giorno)
+•	Adattazione Settings a Mobile (1 giorno)
+•	Adattazione Creators a Mobile (1 giorno)
+•	Login e Registrazione: Adattazione Mobile (1 giorno)
+•	Broker Connection: Adattazione Mobile (1 giorno)
+Back-end	35 giorni	•	Backend Login e Register (5 giorni)
+•	Broker Connection (2 giorni)
+•	Stripe Abbonamento (5 giorni)
+•	API per Account Data (3 giorni)
+•	API per Grafici (5 giorni)
+•	Data Model Preparation (5 giorni)
+•	API Operazioni (5 giorni)
+•	API Selected Strategy (5 giorni)
+Interaction between Front-end and Back-end	10 giorni	•	Dash (3 giorni)
+•	Report (1 giorno)
+•	Strategy (5 giorni)
+•	Profile (2 giorni)
+•	Settings (2 giorni)
+Refinements	5 giorni	•	Refinements and Extra Features (5 giorni)
+Testing	10 giorni	•	Testing (10 giorni)
+Previsione Conclusione Lavori
+Milestone	Data di Inizio	Data di Fine	Tempistiche
+Introlavori Front-end	1 giugno 2024	5 giugno 2024	5 giorni
+Main Structure Front-end	6 giugno 2024	23 giugno 2024	18 giorni
+Mobile Transition Front-end	24 giugno 2024	6 luglio 2024	13 giorni
+Back-end	1 giugno 2024 (Parallelo)	6 luglio 2024	35 giorni
+Interaction between Front-end and Back-end	7 luglio 2024	16 luglio 2024	10 giorni
+Refinements	17 luglio 2024	21 luglio 2024	5 giorni
+Testing	22 luglio 2024	31 luglio 2024	10 giorni
+Allocazione Budget per Fig. Esterna
+Descrizione	Quantità
+Budget Disponibile	3.000 €
+Giornate Totali che il Budget Copre	25 giorni
+Giornate Totali Front-end (Prime 3 Milestones)	36 giorni
+Giornate Front-end non coperte	11 giorni
+Giornate Back-end (Milestone 4 in poi)	60 giorni
+Disponibilità Main Dev (12 g/mese x 4 mesi)	48 giorni
+Giornate Back-end e Testing non coperte	12 giorni
+Previsione Chiusura Lavori
+Descrizione	Quantità
+Giornate Non Coperte Totali (Front-end e Back-end)	23 giorni (11 Front-end + 12 Back-end)
+Mesi Extra per Giornate Non Coperte	23 / 12 ≈ 1.92 mesi
+Data Prevista di Chiusura	15 agosto 2024 + 1.92 mesi ≈ metà ottobre 2024
+
+
+V3:
+
+Roadmap di Sviluppo
+Milestone	Tempistiche	Obiettivi
+Introlavori Front-end	3 giorni	•	Login e Registrazione (2 giorni)
+•	Broker Connection (1 giorno)
+Main Structure Front-end	18 giorni	•	Site Nav + Home Page (5 giorni)
+•	Report (2 giorni)
+•	Strategies (5 giorni)
+•	Profile (2 giorni)
+•	Settings (2 giorni)
+•	Creators (2 giorni)
+Mobile Transition Front-end	13 giorni	•	Adattazione Navbar a Mobile (1 giorno)
+•	Adattazione Home Page a Mobile (2 giorni)
+•	Adattazione Strategy a Mobile (5 giorni)
+•	Adattazione Profile a Mobile (1 giorno)
+•	Adattazione Settings a Mobile (1 giorno)
+•	Adattazione Creators a Mobile (1 giorno)
+•	Login e Registrazione: Adattazione Mobile (1 giorno)
+•	Broker Connection: Adattazione Mobile (1 giorno)
+Back-end	35 giorni	•	Backend Login e Register (5 giorni)
+•	Broker Connection (2 giorni)
+•	Stripe Abbonamento (5 giorni)
+•	API per Account Data (5 giorni)
+•	API per Grafici (5 giorni)
+•	Data Model Preparation (5 giorni)
+•	API Operazioni (5 giorni)
+•	API Selected Strategy (5 giorni)
+Interaction between Front-end and Back-end	10 giorni	•	Dash (3 giorni)
+•	Report (1 giorno)
+•	Strategy (5 giorni)
+•	Profile (2 giorni)
+•	Settings (2 giorni)
+Refinements	5 giorni	•	Refinements and Extra Features (5 giorni)
+Testing	10 giorni	•	Testing (10 giorni)
+Previsione Conclusione Lavori
+Milestone	Data di Inizio	Data di Fine	Tempistiche
+Introlavori Front-end	1 giugno 2024	3 giugno 2024	3 giorni
+Main Structure Front-end	4 giugno 2024	21 giugno 2024	18 giorni
+Mobile Transition Front-end	22 giugno 2024	4 luglio 2024	13 giorni
+Back-end	1 giugno 2024 (Parallelo)	6 luglio 2024	35 giorni
+Interaction between Front-end and Back-end	7 luglio 2024	16 luglio 2024	10 giorni
+Refinements	17 luglio 2024	21 luglio 2024	5 giorni
+Testing	22 luglio 2024	31 luglio 2024	10 giorni
+Allocazione Budget per Fig. Esterna
+Descrizione	Quantità
+Budget Disponibile	3.000 €
+Giornate Totali che il Budget Copre	25 giorni
+Giornate Totali Front-end (Prime 3 Milestones)	34 giorni
+Giornate Front-end non coperte	9 giorni
+Giornate Back-end (Milestone 4 in poi)	65 giorni
+Disponibilità Main Dev (12 g/mese x 4 mesi)	48 giorni
+Giornate Back-end e Testing non coperte	17 giorni
+Previsione Chiusura Lavori
+Descrizione	Quantità
+Giornate Non Coperte Totali (Front-end e Back-end)	26 giorni (9 Front-end + 17 Back-end)
+Mesi Extra per Giornate Non Coperte	26 / 12 = 2.17 mesi
+Data Prevista di Chiusura	31 luglio 2024 + 2.17 mesi ≈ fine settembre 2024
+Obiettivi Tagliati e Giorni Recuperati
+Milestone	Obiettivo Tagliato	Giornate Recuperate
+Interaction between Front-end and Back-end	Redefinement and Extra Features	5 giorni
+Back-end	Stripe Abbonamento	5 giorni
+Introlavori Front-end	Pagamento Integrato	2 giorni
+
