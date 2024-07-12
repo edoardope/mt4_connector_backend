@@ -75,6 +75,19 @@ public function status(Request $request)
     // Decodifica la stringa JSON in un array associativo
     $data = json_decode($jsonString, true);
 
+    // Check if json_decode was successful
+    if (json_last_error() !== JSON_ERROR_NONE) {
+        Log::error('JSON decode error: ' . json_last_error_msg());
+
+        return response()->json([
+            'success' => false,
+            'message' => 'Invalid JSON format.'
+        ], 400);
+    }
+
+    // Log the decoded data
+    Log::info('Decoded JSON data:', ['data' => $data]);
+
     // Estrai il license_key e la version dall'array associativo
     $license_key = $data['license_key'] ?? null;
     $version = $data['version'] ?? null;
