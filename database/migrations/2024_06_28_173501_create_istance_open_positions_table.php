@@ -23,7 +23,7 @@ return new class extends Migration
             $table->integer('side')->nullable();
             $table->double('lot_size')->nullable();
             $table->integer('magic_number')->nullable();
-            $table->boolean('ispending_order')->nullable();
+            $table->boolean('pending_order')->nullable();
             $table->string('comment')->nullable();
             $table->timestamps()->nullable();
 
