@@ -229,14 +229,14 @@ public function market(Request $request)
 
             foreach ($open_position as $position) {
                 // Verifica se esiste già un record con istance_key e ticket
-                $existingRecord = DB::table('open_positions')
+                $existingRecord = DB::table('istance_open_positions')
                     ->where('istance_key', $license_key)
                     ->where('ticket', $position['ticket']) // Nota: usiamo ['ticket'] invece di ->ticket
                     ->first();
 
                 if ($existingRecord) {
                     // Aggiorna il record esistente
-                    DB::table('open_positions')
+                    DB::table('istance_open_positions')
                         ->where('id', $existingRecord->id)
                         ->update([
                             'pair' => $position['pair'],
@@ -253,7 +253,7 @@ public function market(Request $request)
                         ]);
                 } else {
                     // Crea un nuovo record
-                    DB::table('open_positions')->insert([
+                    DB::table('istance_open_positions')->insert([
                         'istance_key' => $license_key,
                         'ticket' => $position['ticket'],
                         'pair' => $position['pair'],
