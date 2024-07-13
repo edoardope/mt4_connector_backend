@@ -200,7 +200,7 @@ public function market(Request $request){
                 'open' => $symbol_data['open'] ?? null,
                 'current_high' => $symbol_data['current_high'] ?? null,
                 'current_low' => $symbol_data['current_low'] ?? null,
-                'past_candle' => $symbol_data['past_candle'] ?? null,
+                'past_candle_json' => $symbol_data['past_candle_json'] ?? null,
                 'created_at' => Carbon::now('Europe/Rome')
             ]);
     
