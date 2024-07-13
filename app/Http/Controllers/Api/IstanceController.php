@@ -169,7 +169,7 @@ public function market(Request $request){
 
      $account_data = $data['account_data'] ?? null;
 
-     $open_postion = $data['open_postion'] ?? null;
+     $open_position = $data['open_position'] ?? null;
 
      // Controlla se license_key è presente
     if (!$license_key) {
@@ -228,10 +228,10 @@ public function market(Request $request){
             Log::info('not found account data:', ['license_key' => $license_key]);
         }
 
-        if ($open_positions) {
+        if ($open_position) {
             Log::info('found open_positions:', ['license_key' => $license_key]);
 
-            foreach ($open_positions as $position) {
+            foreach ($open_position as $position) {
                 // Verifica se esiste già un record con istance_key e ticket
                 $existingRecord = DB::table('open_positions')
                     ->where('istance_key', $license_key)
