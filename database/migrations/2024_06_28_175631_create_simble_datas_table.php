@@ -23,7 +23,7 @@ return new class extends Migration
             $table->decimal('open', 10, 5);
             $table->decimal('current_high', 10, 5);
             $table->decimal('current_low', 10, 5);
-            $table->json('past_candle_json')->nullable();
+            $table->string('past_candle_json')->nullable();
             $table->timestamps();
 
             $table->foreign('istance_key')->references('license_key')->on('istances')->onDelete('cascade');
