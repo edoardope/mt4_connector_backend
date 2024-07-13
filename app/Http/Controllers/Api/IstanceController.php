@@ -319,32 +319,38 @@ public function history(Request $request)
     $istance_closed_order = $data['istance_closed_order'] ?? null;
 
     // Cerca il record con license_key uguale a $license_key nella tabella istance_open_positions
-    $instance = DB::table('istance_open_positions')->where('istance_key', $license_key)->first();
+    $instance = DB::table('istance_open_positions')
+        ->where('instance_key', $license_key)
+        ->where('ticket', $istance_closed_order['ticket']) // Aggiunto il check sulla colonna ticket
+        ->first();
 
     // Controlla se il record esiste
     if ($instance) {
         // Prepara i dati per inserire nella tabella istance_closed_positions
         $insertData = [
             'istance_key' => $license_key,
-            'ticket' => $data["ticket"],
-            'pair' => $data["pair"],
-            'profit' => $data["profit"],
-            'open_price' => $data["open_price"],
-            'take_profit' => $data["take_profit"],
-            'stop_loss' => $data["stop_loss"],
-            'side' => $data["side"],
-            'lot_size' => $data["lotsize"],
-            'magic_number' => $data["magic_number"],
-            'comment' => $data["comment"],
-            'created_at' => now(),
-            'updated_at' => now()
+            'ticket' => $istance_closed_order["ticket"],
+            'pair' => $istance_closed_order["pair"],
+            'profit' => $istance_closed_order["profit"],
+            'open_price' => $istance_closed_order["open_price"],
+            'take_profit' => $istance_closed_order["take_profit"],
+            'stop_loss' => $istance_closed_order["stop_loss"],
+            'side' => $istance_closed_order["side"],
+            'lot_size' => $istance_closed_order["lotsize"],
+            'magic_number' => $istance_closed_order["magic_number"],
+            'comment' => $istance_closed_order["comment"],
+            'created_at' => Carbon::now('Europe/Rome'),
+            'updated_at' => Carbon::now('Europe/Rome')
         ];
 
         // Insert into istance_closed_positions table
         DB::table('istance_closed_postions')->insert($insertData);
 
         // Delete the record from istance_open_positions
-        DB::table('istance_open_positions')->where('istance_key', $license_key)->delete();
+        DB::table('istance_open_positions')
+        ->where('instance_key', $license_key)
+        ->where('ticket', $istance_closed_order['ticket']) // Aggiunto il check sulla colonna ticket
+        ->delete();
 
         return response()->json([
             'success' => true,
