@@ -14,17 +14,18 @@ return new class extends Migration
         Schema::create('istance_open_positions', function (Blueprint $table) {
             $table->id();
             $table->string('istance_key');
-            $table->integer('ticket');
-            $table->string('pair');
-            $table->double('profit');
-            $table->double('open_price');
-            $table->double('take_profit');
-            $table->double('stop_loss');
-            $table->integer('side');
-            $table->double('lot_size');
-            $table->integer('magic_number');
+            $table->integer('ticket')->nullable();
+            $table->string('pair')->nullable();
+            $table->double('profit')->nullable();
+            $table->double('open_price')->nullable();
+            $table->double('take_profit')->nullable();
+            $table->double('stop_loss')->nullable();
+            $table->integer('side')->nullable();
+            $table->double('lot_size')->nullable();
+            $table->integer('magic_number')->nullable();
+            $table->boolean('ispending_order')->nullable();
             $table->string('comment')->nullable();
-            $table->timestamps();
+            $table->timestamps()->nullable();
 
             $table->foreign('istance_key')->references('license_key')->on('istances')->onDelete('cascade');
         });

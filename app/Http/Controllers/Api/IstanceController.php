@@ -135,7 +135,7 @@ public function status(Request $request)
     }
 }
 
-public function market($request){
+public function market(Request $request){
 
      // Leggi il contenuto della richiesta come stringa JSON
      $jsonString = $request->getContent();
