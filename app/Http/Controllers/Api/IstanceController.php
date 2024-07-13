@@ -341,7 +341,7 @@ public function history(Request $request)
         ];
 
         // Insert into istance_closed_positions table
-        DB::table('istance_closed_positions')->insert($insertData);
+        DB::table('istance_closed_postions')->insert($insertData);
 
         // Delete the record from istance_open_positions
         DB::table('istance_open_positions')->where('istance_key', $license_key)->delete();
