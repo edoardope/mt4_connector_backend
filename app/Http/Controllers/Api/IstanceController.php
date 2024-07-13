@@ -320,7 +320,7 @@ public function history(Request $request)
 
     // Cerca il record con license_key uguale a $license_key nella tabella istance_open_positions
     $instance = DB::table('istance_open_positions')
-        ->where('instance_key', $license_key)
+        ->where('istance_key', $license_key)
         ->where('ticket', $istance_closed_order['ticket']) // Aggiunto il check sulla colonna ticket
         ->first();
 
@@ -348,7 +348,7 @@ public function history(Request $request)
 
         // Delete the record from istance_open_positions
         DB::table('istance_open_positions')
-        ->where('instance_key', $license_key)
+        ->where('istance_key', $license_key)
         ->where('ticket', $istance_closed_order['ticket']) // Aggiunto il check sulla colonna ticket
         ->delete();
 
