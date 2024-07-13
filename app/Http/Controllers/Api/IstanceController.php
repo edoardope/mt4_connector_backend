@@ -113,7 +113,7 @@ public function status(Request $request)
         // Aggiorna la colonna status a true e last_contact con la data attuale
         DB::table('istances')->where('license_key', $license_key)->update([
             'status' => true,
-            'last_contact' => Carbon::now(), // Usa Carbon per ottenere la data attuale
+            'last_contact' => Carbon::now('Europe/Rome'), // Usa Carbon per ottenere la data attuale
             'version' => $version
         ]);
 
