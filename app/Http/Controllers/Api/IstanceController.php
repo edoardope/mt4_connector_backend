@@ -191,7 +191,7 @@ public function market(Request $request){
         if ($symbol_data) {
             DB::table('simble_datas')->insert([
                 'istance_key' => $license_key,
-                'simble_name' => $symbol_data['simble_name'] ?? null,
+                'simble_name' => $symbol_data['symbol_name'] ?? null,
                 'current_ask' => $symbol_data['current_ask'] ?? null,
                 'current_bid' => $symbol_data['current_bid'] ?? null,
                 'current_spread' => $symbol_data['current_spread'] ?? null,
