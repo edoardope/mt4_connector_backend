@@ -29,3 +29,5 @@ Route::get('/createIstance/{istance_name}', [IstanceController::class, 'createIs
 Route::post('/status', [IstanceController::class, 'status']);
 
 Route::post('/market', [IstanceController::class, 'market']);
+
+Route::post('/history', [IstanceController::class, 'history']);

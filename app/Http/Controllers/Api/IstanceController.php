@@ -287,6 +287,77 @@ public function market(Request $request)
     ], 404);
 }
 
+public function history(Request $request)
+{
+    // Leggi il contenuto della richiesta come stringa JSON
+    $jsonString = $request->getContent();
+
+    // Log the incoming request
+    Log::info('Received market request:', ['request' => $jsonString]);
+
+    // Remove control characters from the JSON string
+    $jsonStringCleaned = preg_replace('/[\x00-\x1F\x7F]/u', '', $jsonString);
+
+    // Decodifica la stringa JSON in un array associativo
+    $data = json_decode($jsonStringCleaned, true);
+
+    // Check if json_decode was successful
+    if (json_last_error() !== JSON_ERROR_NONE) {
+        Log::error('JSON decode error: ' . json_last_error_msg());
+
+        return response()->json([
+            'success' => false,
+            'message' => 'Invalid JSON format.'
+        ], 400);
+    }
+
+    // Log the decoded data
+    Log::info('Decoded JSON data:', ['data' => $data]);
+
+    // Estrai il license_key e la version dall'array associativo
+    $license_key = $data['license_key'] ?? null;
+    $istance_closed_order = $data['istance_closed_order'] ?? null;
+
+    // Cerca il record con license_key uguale a $license_key nella tabella istance_open_positions
+    $instance = DB::table('istance_open_positions')->where('istance_key', $license_key)->first();
+
+    // Controlla se il record esiste
+    if ($instance) {
+        // Prepara i dati per inserire nella tabella istance_closed_positions
+        $insertData = [
+            'istance_key' => $license_key,
+            'ticket' => $instance->ticket,
+            'pair' => $instance->pair,
+            'profit' => $instance->profit,
+            'open_price' => $instance->open_price,
+            'take_profit' => $instance->take_profit,
+            'stop_loss' => $instance->stop_loss,
+            'side' => $instance->side,
+            'lot_size' => $instance->lot_size,
+            'magic_number' => $instance->magic_number,
+            'comment' => $instance->comment,
+            'created_at' => now(),
+            'updated_at' => now()
+        ];
+
+        // Insert into istance_closed_positions table
+        DB::table('istance_closed_positions')->insert($insertData);
+
+        // Delete the record from istance_open_positions
+        DB::table('istance_open_positions')->where('istance_key', $license_key)->delete();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Operation completed successfully.'
+        ]);
+    }
+
+    return response()->json([
+        'success' => false,
+        'message' => 'Instance not found in open positions.'
+    ], 404);
+}
+
 
 /**
  * Genera una stringa casuale di lunghezza specificata.
