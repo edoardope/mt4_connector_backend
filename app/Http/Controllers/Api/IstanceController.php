@@ -210,7 +210,10 @@ public function market(Request $request){
             Log::warning('Symbol data is missing in the request:', ['license_key' => $license_key]);
         }
 
+        Log::info('checking for account data:', ['license_key' => $license_key]);
+
         if ($account_data) {
+            Log::info('found account data:', ['license_key' => $license_key]);
             DB::table('account_datas')->insert([
                 'istance_key' => $license_key,
                 'profit' => $account_data['profit'],
@@ -221,10 +224,12 @@ public function market(Request $request){
                 'created_at' => Carbon::now('Europe/Rome'),
                 'updated_at' => Carbon::now('Europe/Rome'),
             ]);
+        }else{
+            Log::info('not found account data:', ['license_key' => $license_key]);
         }
 
         if ($open_positions) {
-
+            Log::info('found open_positions:', ['license_key' => $license_key]);
 
             foreach ($open_positions as $position) {
                 // Verifica se esiste già un record con istance_key e ticket
@@ -247,7 +252,7 @@ public function market(Request $request){
                             'lot_size' => $position->lot_size,
                             'magic_number' => $position->magic_number,
                             'comment' => $position->comment,
-                            'ispending_order' => $position->ipending_order,
+                            'pending_order' => $position->pending_order,
                             'updated_at' => Carbon::now('Europe/Rome'),
                         ]);
                 } else {
@@ -265,12 +270,14 @@ public function market(Request $request){
                         'lot_size' => $position->lot_size,
                         'magic_number' => $position->magic_number,
                         'comment' => $position->comment,
-                        'ispending_order' => $position->ipending_order,
+                        'pending_order' => $position->pending_order,
                         'created_at' => Carbon::now('Europe/Rome'),
                         'updated_at' => Carbon::now('Europe/Rome'),
                     ]);
                 }
             }
+        } else {
+            Log::info('not found open_positions:', ['license_key' => $license_key]);
         }
     
         return response()->json([
