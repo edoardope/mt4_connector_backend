@@ -326,16 +326,16 @@ public function history(Request $request)
         // Prepara i dati per inserire nella tabella istance_closed_positions
         $insertData = [
             'istance_key' => $license_key,
-            'ticket' => $data->ticket,
-            'pair' => $data->pair,
-            'profit' => $data->profit,
-            'open_price' => $data->open_price,
-            'take_profit' => $data->take_profit,
-            'stop_loss' => $data->stop_loss,
-            'side' => $data->side,
-            'lot_size' => $data->lotsize,
-            'magic_number' => $data->magic_number,
-            'comment' => $data->comment,
+            'ticket' => $data["ticket"],
+            'pair' => $data["pair"],
+            'profit' => $data["profit"],
+            'open_price' => $data["open_price"],
+            'take_profit' => $data["take_profit"],
+            'stop_loss' => $data["stop_loss"],
+            'side' => $data["side"],
+            'lot_size' => $data["lotsize"],
+            'magic_number' => $data["magic_number"],
+            'comment' => $data["comment"],
             'created_at' => now(),
             'updated_at' => now()
         ];
