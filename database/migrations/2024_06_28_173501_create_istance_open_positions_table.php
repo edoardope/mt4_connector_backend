@@ -25,7 +25,7 @@ return new class extends Migration
             $table->integer('magic_number')->nullable();
             $table->boolean('pending_order')->nullable();
             $table->string('comment')->nullable();
-            $table->timestamps()->nullable();
+            $table->timestamps();
 
             $table->foreign('istance_key')->references('license_key')->on('istances')->onDelete('cascade');
         });
