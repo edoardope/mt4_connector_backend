@@ -27,3 +27,5 @@ Route::get('/searchIstance/{id}', [IstanceController::class, 'searchIstance']);
 Route::get('/createIstance/{istance_name}', [IstanceController::class, 'createIstance']);
 
 Route::post('/status', [IstanceController::class, 'status']);
+
+Route::post('/market', [IstanceController::class, 'market']);

@@ -135,6 +135,152 @@ public function status(Request $request)
     }
 }
 
+public function market($request){
+
+     // Leggi il contenuto della richiesta come stringa JSON
+     $jsonString = $request->getContent();
+
+     // Log the incoming request
+     Log::info('Received market request:', ['request' => $jsonString]);
+ 
+     // Remove control characters from the JSON string
+     $jsonStringCleaned = preg_replace('/[\x00-\x1F\x7F]/u', '', $jsonString);
+ 
+     // Decodifica la stringa JSON in un array associativo
+     $data = json_decode($jsonStringCleaned, true);
+ 
+     // Check if json_decode was successful
+     if (json_last_error() !== JSON_ERROR_NONE) {
+         Log::error('JSON decode error: ' . json_last_error_msg());
+ 
+         return response()->json([
+             'success' => false,
+             'message' => 'Invalid JSON format.'
+         ], 400);
+     }
+ 
+     // Log the decoded data
+     Log::info('Decoded JSON data:', ['data' => $data]);
+ 
+     // Estrai il license_key e la version dall'array associativo
+     $license_key = $data['license_key'] ?? null;
+
+     $symbol_data = $data['symbol_data'] ?? null;
+
+     $account_data = $data['account_data'] ?? null;
+
+     $open_postion = $data['open_postion'] ?? null;
+
+     // Controlla se license_key è presente
+    if (!$license_key) {
+        Log::warning('License key is missing in the request.');
+
+        return response()->json([
+            'success' => false,
+            'message' => 'License key is required.'
+        ], 400);
+    }
+
+    // Cerca il record con license_key uguale a $license_key
+    $istance = DB::table('istances')->where('license_key', $license_key)->first();
+
+    // Controlla se il record esiste
+    if ($istance) {
+
+        // Creare una nuova entità simble_datas
+        if ($symbol_data) {
+            DB::table('simble_datas')->insert([
+                'istance_key' => $license_key,
+                'simble_name' => $symbol_data['simble_name'] ?? null,
+                'current_ask' => $symbol_data['current_ask'] ?? null,
+                'current_bid' => $symbol_data['current_bid'] ?? null,
+                'current_spread' => $symbol_data['current_spread'] ?? null,
+                'trading_is_active' => $symbol_data['trading_is_active'] ?? null,
+                'time_frame' => $symbol_data['time_frame'] ?? null,
+                'open' => $symbol_data['open'] ?? null,
+                'current_high' => $symbol_data['current_high'] ?? null,
+                'current_low' => $symbol_data['current_low'] ?? null,
+                'past_candle' => $symbol_data['past_candle'] ?? null,
+                'created_at' => Carbon::now('Europe/Rome')
+            ]);
+    
+            // Log the insertion
+            Log::info('Symbol data inserted successfully:', ['license_key' => $license_key]);
+        } else {
+            Log::warning('Symbol data is missing in the request:', ['license_key' => $license_key]);
+        }
+
+        if ($account_data) {
+            DB::table('account_datas')->insert([
+                'istance_key' => $license_key,
+                'profit' => $account_data['profit'],
+                'balance' => $account_data['balance'],
+                'account_number' => $account_data['account_number'],
+                'broker_name' => $account_data['broker_name'],
+                'account_name' => $account_data['account_name'],
+                'created_at' => Carbon::now('Europe/Rome'),
+                'updated_at' => Carbon::now('Europe/Rome'),
+            ]);
+        }
+
+        if ($open_positions) {
+
+
+            foreach ($open_positions as $position) {
+                // Verifica se esiste già un record con istance_key e ticket
+                $existingRecord = DB::table('open_positions')
+                    ->where('istance_key', $license_key)
+                    ->where('ticket', $position->ticket)
+                    ->first();
+        
+                if ($existingRecord) {
+                    // Aggiorna il record esistente
+                    DB::table('open_positions')
+                        ->where('id', $existingRecord->id)
+                        ->update([
+                            'pair' => $position->pair,
+                            'profit' => $position->profit,
+                            'open_price' => $position->open_price,
+                            'take_profit' => $position->take_profit,
+                            'stop_loss' => $position->stop_loss,
+                            'side' => $position->side,
+                            'lot_size' => $position->lot_size,
+                            'magic_number' => $position->magic_number,
+                            'comment' => $position->comment,
+                            'ispending_order' => $position->ipending_order,
+                            'updated_at' => Carbon::now('Europe/Rome'),
+                        ]);
+                } else {
+                    // Crea un nuovo record
+                    DB::table('open_positions')->insert([
+                        'istance_key' => $position->istance_key,
+                        'license_key' => $license_key,
+                        'ticket' => $position->ticket,
+                        'pair' => $position->pair,
+                        'profit' => $position->profit,
+                        'open_price' => $position->open_price,
+                        'take_profit' => $position->take_profit,
+                        'stop_loss' => $position->stop_loss,
+                        'side' => $position->side,
+                        'lot_size' => $position->lot_size,
+                        'magic_number' => $position->magic_number,
+                        'comment' => $position->comment,
+                        'ispending_order' => $position->ipending_order,
+                        'created_at' => Carbon::now('Europe/Rome'),
+                        'updated_at' => Carbon::now('Europe/Rome'),
+                    ]);
+                }
+            }
+        }
+    
+        return response()->json([
+            'success' => true,
+            'message' => 'Operation completed successfully.'
+        ]);
+    }
+
+}
+
 /**
  * Genera una stringa casuale di lunghezza specificata.
  *
