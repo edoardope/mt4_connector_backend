@@ -285,7 +285,7 @@ public function market(Request $request)
             // Esegui la cancellazione dopo aver ottenuto l'oggetto
             DB::table('command_queues')->where('id', $command->id)->delete();
     
-            Log::info('command found', ['istance_key' => $istance_key]);
+            Log::info('command found', ['istance_key' => $license_key]);
     
             if ($command->cmd_name == 'open') {
                 return response()->json([
