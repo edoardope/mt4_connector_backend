@@ -4,6 +4,10 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Carbon\Carbon;
+use Illuminate\Support\Facades\Log;
+
+use Illuminate\Support\Facades\DB;
 
 class cmdController extends Controller
 {
@@ -39,6 +43,9 @@ class cmdController extends Controller
     ]);
 
     // Puoi restituire una risposta o eseguire ulteriori azioni qui
-    return response()->json(['message' => 'Command created successfully'], 201);
-    }
+    return response()->json([
+        'succes' => true
+    ]);
+
+}
 }
