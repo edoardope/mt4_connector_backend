@@ -15,8 +15,14 @@ return new class extends Migration
             $table->id();
             $table->string('istance_key');
             $table->string('cmd_name');
-            $table->string('params');
-            $table->integer('Automatism_id');
+            $table->integer('ticket')->nullable();
+            $table->integer('side')->nullable();
+            $table->integer('magnum')->nullable();
+            $table->integer('Automatism_id')->nullable();
+            $table->decimal('lot', 10, 5)->nullable();
+            $table->decimal('tp', 10, 5)->nullable();
+            $table->decimal('sl', 10, 5)->nullable();
+            $table->string('comment')->nullable();
             $table->timestamps();
 
             $table->foreign('istance_key')->references('license_key')->on('istances')->onDelete('cascade');

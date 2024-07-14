@@ -275,6 +275,59 @@ public function market(Request $request)
             Log::info('not found open_positions:', ['license_key' => $license_key]);
         }
 
+        Log::info('searching for commands:', ['license_key' => $license_key]);
+
+        $command = DB::table('command_queues')->where('istance_key', $license_key)->first();
+
+        if($command){
+
+            Log::info('command found: ' + $command["cmd_name"], ['license_key' => $license_key]);
+
+            DB::table('command_queues')->where('id', $command-["id"])
+            ->first()
+            ->delete();
+
+            if($command["cmd_name"] == 'open'){
+
+                return response()->json([
+                    'success' => true,
+                    'cmdname' => $command["cmd_name"],
+                    'side' => $command["side"],
+                    'lot' => $command["lot"],
+                    'tp' => $command["tp"],
+                    'sl' => $command["sl"],
+                    'magnum' => $command["magnum"],
+                    'comment' => $command["comment"],
+                ]);
+
+            } else if($command["cmd_name"] == 'close'){
+
+                return response()->json([
+                    'success' => true,
+                    'cmdname' => $command["cmd_name"],
+                    'ticket' => $command["ticket"],
+                    'lot' => $command["lot"]
+                ]);
+                
+            } else if($command["cmd_name"] == 'modify'){
+                
+                return response()->json([
+                    'success' => true,
+                    'cmdname' => $command["cmd_name"],
+                    'ticket' => $command["ticket"],
+                    'price' => $command["price"],
+                    'tp' => $command["tp"],
+                    'sl' => $command["sl"]
+                ]);
+
+            }
+            return response()->json([
+                'success' => true,
+                'message' => 'Operation completed successfully.'
+            ]);
+            
+        }
+
         return response()->json([
             'success' => true,
             'message' => 'Operation completed successfully.'
