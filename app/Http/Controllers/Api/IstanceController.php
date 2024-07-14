@@ -281,14 +281,13 @@ public function market(Request $request)
 
         $command = DB::table('command_queues')->where('istance_key', $license_key)->first();
 
-        if($command){
-
-            Log::info('command found', ['license_key' => $license_key]);
-
+        if ($command) {
+            // Esegui la cancellazione dopo aver ottenuto l'oggetto
             DB::table('command_queues')->where('id', $command->id)->delete();
-
-            if($command->cmd_name == 'open'){
-
+    
+            Log::info('command found', ['istance_key' => $istance_key]);
+    
+            if ($command->cmd_name == 'open') {
                 return response()->json([
                     'success' => true,
                     'cmdname' => $command->cmd_name,
@@ -299,18 +298,14 @@ public function market(Request $request)
                     'magnum' => $command->magnum,
                     'comment' => $command->comment,
                 ]);
-
-            } else if($command->cmd_name == 'close'){
-
+            } else if ($command->cmd_name == 'close') {
                 return response()->json([
                     'success' => true,
                     'cmdname' => $command->cmd_name,
                     'ticket' => $command->ticket,
                     'lot' => $command->lot
                 ]);
-                
-            } else if($command->cmd_name == 'modify'){
-                
+            } else if ($command->cmd_name == 'modify') {
                 return response()->json([
                     'success' => true,
                     'cmdname' => $command->cmd_name,
@@ -319,13 +314,12 @@ public function market(Request $request)
                     'tp' => $command->tp,
                     'sl' => $command->sl
                 ]);
-
             }
+    
             return response()->json([
                 'success' => true,
                 'message' => 'Operation completed successfully.'
             ]);
-            
         }
 
         return response()->json([
