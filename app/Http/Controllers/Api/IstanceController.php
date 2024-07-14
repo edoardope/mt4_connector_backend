@@ -18,7 +18,7 @@ class IstanceController extends Controller
             'succes' => true,
             'istance' => $istances
         ]);
-    }
+    } 
 
     public function searchIstance($id)
     {
