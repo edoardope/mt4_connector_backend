@@ -462,6 +462,8 @@ private function pac($timeframe, $istance_key, $magnum){
     $lastTime = Carbon::parse($lastCandle->created_at);
     $differenceInMinutes = $firstTime->diffInMinutes($lastTime);
 
+    Log::info($differenceInMinutes);
+
     // Verifica se la differenza di tempo è di almeno 3 minuti
     if ($differenceInMinutes >= 3) {
         // Sono passati almeno 3 minuti
