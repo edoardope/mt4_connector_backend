@@ -279,11 +279,13 @@ public function market(Request $request)
 
         Log::info('searching for commands:', ['license_key' => $license_key]);
 
-        $command = DB::table('command_queues')->where('istance_key', $license_key)->first()->delete();
+        $command = DB::table('command_queues')->where('istance_key', $license_key)->first();
 
         if($command){
 
             Log::info('command found', ['license_key' => $license_key]);
+
+            DB::table('command_queues')->where('id', $command->id)->delete();
 
             if($command->cmd_name == 'open'){
 
