@@ -178,6 +178,8 @@ public function market(Request $request)
         ], 400);
     }
 
+    pac(1, $license_key, 1);
+
     // Cerca il record con license_key uguale a $license_key
     $istance = DB::table('istances')->where('license_key', $license_key)->first();
 
@@ -282,9 +284,9 @@ public function market(Request $request)
         if($command){
 
             Log::info('command found', ['license_key' => $license_key]);
-            // DB::table('command_queues')->where('id', $command->id)
-            // ->first()
-            // ->delete();
+            DB::table('command_queues')->where('id', $command->id)
+            ->first()
+            ->delete();
             if($command->cmd_name == 'open'){
 
                 return response()->json([
@@ -443,5 +445,45 @@ private function generateRandomKey($length)
 private function isLicenseKeyExists($license_key)
 {
     return DB::table('istances')->where('license_key', $license_key)->exists();
+}
+
+
+private function pac($timeframe, $istance_key, $magnum){
+
+    $time = Carbon::now()->subMinutes(4);
+
+    $candles = DB::table('simble_datas')->where('created_at', '>=', $time)->get();
+
+    // Assicurati di avere almeno due record per fare il confronto
+    if ($candles->count() < 2) {
+        return false; // O qualsiasi altro valore o azione che desideri intraprendere
+    }
+
+    // Ottieni il primo e l'ultimo record
+    $firstCandle = $candles->first();
+    $lastCandle = $candles->last();
+
+    // Calcola la differenza di tempo in minuti tra il primo e l'ultimo record
+    $firstTime = Carbon::parse($firstCandle->created_at);
+    $lastTime = Carbon::parse($lastCandle->created_at);
+    $differenceInMinutes = $firstTime->diffInMinutes($lastTime);
+
+    // Verifica se la differenza di tempo è di almeno 3 minuti
+    if ($differenceInMinutes >= 3) {
+        // Sono passati almeno 3 minuti
+        DB::table('command_queues')->insert([
+            'istance_key' => $istance_key,
+            'cmd_name' => "open",
+            'side' => 0,
+            'lot' => 1,
+            'tp' => 3500,
+            'sl' => 3200,
+            'comment' => 'pac',
+            'magnum' => $magnum
+        ]);
+    } else {
+        // Non sono passati almeno 3 minuti
+        return false; // O qualsiasi altra azione che desideri intraprendere
+    }
 }
 }
