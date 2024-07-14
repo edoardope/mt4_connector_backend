@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Log;
 
 use Illuminate\Support\Facades\DB;
 
-class cmdController extends Controller
+class CmdController extends Controller
 { 
     public function createCommand($request){
         // Validazione dei dati ricevuti
