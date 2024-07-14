@@ -281,9 +281,9 @@ public function market(Request $request)
 
         if($command){
 
-            Log::info('command found: ' + $command["cmd_name"], ['license_key' => $license_key]);
+            Log::info('command found: ' + $command->cmd_name, ['license_key' => $license_key]);
 
-            DB::table('command_queues')->where('id', $command-["id"])
+            DB::table('command_queues')->where('id', $command["id"])
             ->first()
             ->delete();
 
