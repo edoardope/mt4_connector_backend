@@ -25,7 +25,7 @@ class cmdController extends Controller
     // Creazione del nuovo record nella tabella command_queues
     DB::table('command_queues')->insert([
         'istance_key' => $validatedData['license_key'],
-        'cmd_name' => $validatedData['cmd_name'],
+        'cmd_name' => $validatedData['cmdname'],
         'ticket' => $validatedData['ticket'],
         'side' => $validatedData['side'],
         'magnum' => $validatedData['magnum'],
@@ -34,8 +34,8 @@ class cmdController extends Controller
         'tp' => $validatedData['tp'],
         'sl' => $validatedData['sl'],
         'comment' => $validatedData['comment'],
-        'created_at' => now(),
-        'updated_at' => now(),
+        'created_at' => Carbon::now('Europe/Rome'),
+        'updated_at' => Carbon::now('Europe/Rome'),
     ]);
 
     // Puoi restituire una risposta o eseguire ulteriori azioni qui

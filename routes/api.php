@@ -4,6 +4,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 use App\Http\Controllers\Api\IstanceController;
+use App\Http\Controllers\Api\CmdController;
 
 /*
 |--------------------------------------------------------------------------
@@ -31,3 +32,5 @@ Route::post('/status', [IstanceController::class, 'status']);
 Route::post('/market', [IstanceController::class, 'market']);
 
 Route::post('/history', [IstanceController::class, 'history']);
+
+Route::post('/createCommand', [CmdController::class, 'createCommand']);
