@@ -281,9 +281,9 @@ public function market(Request $request)
 
         if($command){
 
-            Log::info('command found: ', $command->cmd_name, ['license_key' => $license_key]);
+            Log::info('command found', ['license_key' => $license_key]);
 
-            DB::table('command_queues')->where('id', $command["id"])
+            DB::table('command_queues')->where('id', $command->id)
             ->first()
             ->delete();
 
@@ -291,33 +291,33 @@ public function market(Request $request)
 
                 return response()->json([
                     'success' => true,
-                    'cmdname' => $command["cmd_name"],
-                    'side' => $command["side"],
-                    'lot' => $command["lot"],
-                    'tp' => $command["tp"],
-                    'sl' => $command["sl"],
-                    'magnum' => $command["magnum"],
-                    'comment' => $command["comment"],
+                    'cmdname' => $command->cmd_name,
+                    'side' => $command->side,
+                    'lot' => $command->lot,
+                    'tp' => $command->tp,
+                    'sl' => $command->sl,
+                    'magnum' => $command->magnum,
+                    'comment' => $command->comment,
                 ]);
 
-            } else if($command["cmd_name"] == 'close'){
+            } else if($command->cmd_name == 'close'){
 
                 return response()->json([
                     'success' => true,
-                    'cmdname' => $command["cmd_name"],
-                    'ticket' => $command["ticket"],
-                    'lot' => $command["lot"]
+                    'cmdname' => $command->cmd_name,
+                    'ticket' => $command->ticket,
+                    'lot' => $command->lot
                 ]);
                 
-            } else if($command["cmd_name"] == 'modify'){
+            } else if($command->cmd_name == 'modify'){
                 
                 return response()->json([
                     'success' => true,
-                    'cmdname' => $command["cmd_name"],
-                    'ticket' => $command["ticket"],
-                    'price' => $command["price"],
-                    'tp' => $command["tp"],
-                    'sl' => $command["sl"]
+                    'cmdname' => $command->cmd_name,
+                    'ticket' => $command->ticket,
+                    'price' => $command->price,
+                    'tp' => $command->tp,
+                    'sl' => $command->sl
                 ]);
 
             }
