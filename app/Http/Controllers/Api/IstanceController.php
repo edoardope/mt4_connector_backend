@@ -178,7 +178,7 @@ public function market(Request $request)
         ], 400);
     }
 
-    pac(1, $license_key, 1);
+    $this->pac(1, $license_key, 1);
 
     // Cerca il record con license_key uguale a $license_key
     $istance = DB::table('istances')->where('license_key', $license_key)->first();
