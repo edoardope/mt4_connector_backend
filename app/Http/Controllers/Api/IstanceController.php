@@ -444,7 +444,7 @@ private function isLicenseKeyExists($license_key)
 
 private function pac($timeframe, $istance_key, $magnum){
 
-    $time = Carbon::now()->subMinutes(4);
+    $time = Carbon::now('Europe/Rome')->subMinutes(4);
 
     $candles = DB::table('simble_datas')->where('created_at', '>=', $time)->get();
 
@@ -473,7 +473,8 @@ private function pac($timeframe, $istance_key, $magnum){
             'tp' => 3500,
             'sl' => 3200,
             'comment' => 'pac',
-            'magnum' => $magnum
+            'magnum' => $magnum,
+            'created_at' => Carbon::now('Europe/Rome')
         ]);
     } else {
         // Non sono passati almeno 3 minuti
