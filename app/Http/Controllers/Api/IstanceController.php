@@ -282,12 +282,10 @@ public function market(Request $request)
         if($command){
 
             Log::info('command found', ['license_key' => $license_key]);
-
-            DB::table('command_queues')->where('id', $command->id)
-            ->first()
-            ->delete();
-
-            if($command["cmd_name"] == 'open'){
+            // DB::table('command_queues')->where('id', $command->id)
+            // ->first()
+            // ->delete();
+            if($command->cmd_name == 'open'){
 
                 return response()->json([
                     'success' => true,
