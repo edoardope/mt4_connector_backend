@@ -185,6 +185,14 @@ public function market(Request $request)
 
     // Controlla se il record esiste
     if ($istance) {
+
+         // Aggiorna la colonna status a true e last_contact con la data attuale
+         DB::table('istances')->where('license_key', $license_key)->update([
+             'status' => true,
+             'last_contact' => Carbon::now('Europe/Rome'), // Usa Carbon per ottenere la data attuale
+             'version' => "JUppilulloYopaYey"
+         ]);
+
         // Creare una nuova entità simble_datas
         if ($symbol_data) {
             DB::table('simble_datas')->insert([
