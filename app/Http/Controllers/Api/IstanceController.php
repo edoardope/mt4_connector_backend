@@ -388,11 +388,15 @@ public function candle(Request $request){
                     ->where('istance_key', $license_key)
                     ->first();
 
+                    $timeframe = $existingRecord->timeframe;
+                    settype($timeframe, "integer");
+                    $market_refresh_rate = $existingRecord->market_refresh_rate;
+                    settype($market_refresh_rate, "integer");
             return response()->json([
                 'success' => true,
                 'symbol' => $existingRecord->active_simble,
-                'timeframe' => $existingRecord->timeframe,
-                'market' => $existingRecord->market_refresh_rate
+                'timeframe' => $timeframe,
+                'market' => $market_refresh_rate
             ]);
 
         } else {
