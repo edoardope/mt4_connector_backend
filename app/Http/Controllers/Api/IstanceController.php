@@ -522,14 +522,14 @@ private function isLicenseKeyExists($license_key)
 private function pac($timeframe, $istance_key, $magnum)
 {
     try {
-        $time = Carbon::now('Europe/Rome')->subMinutes(4);
-
-        // Recupera i record dalla tabella 'simble_datas'
-        $candles = DB::table('simble_datas')->where('created_at', '>=', $time)->get();
+        // Recupera i record dalla tabella 'simble_datas' creati negli ultimi 4 minuti
+        $candles = DB::table('simble_datas')
+            ->where('created_at', '>=', Carbon::now('Europe/Rome')->subMinutes(4))
+            ->get();
 
         // Assicurati di avere almeno due record per fare il confronto
         if ($candles->count() < 2) {
-            return false; // O qualsiasi altro valore o azione che desideri intraprendere
+            return false; // Non ci sono abbastanza dati per fare il confronto
         }
 
         // Ottieni il primo e l'ultimo record
@@ -541,7 +541,7 @@ private function pac($timeframe, $istance_key, $magnum)
         $lastTime = Carbon::parse($lastCandle->created_at);
         $differenceInMinutes = $firstTime->diffInMinutes($lastTime);
 
-        Log::info($differenceInMinutes);
+        Log::info('Difference in minutes: ' . $differenceInMinutes);
 
         // Verifica se la differenza di tempo è di almeno 3 minuti
         if ($differenceInMinutes >= 3) {
@@ -553,20 +553,18 @@ private function pac($timeframe, $istance_key, $magnum)
             if (!$recentPosition) {
                 // Controlla se esiste già un comando con i parametri specificati
                 $existingCommand = DB::table('command_queues')
-                    ->where([
-                        ['istance_key', '=', $istance_key],
-                        ['cmd_name', '=', 'open'],
-                        ['side', '=', 0],
-                        ['lot', '=', 1],
-                        ['tp', '=', 3500],
-                        ['sl', '=', 3200],
-                        ['comment', '=', 'pac'],
-                        ['magnum', '=', $magnum]
-                    ])
+                    ->where('istance_key', $istance_key)
+                    ->where('cmd_name', 'open')
+                    ->where('side', 0)
+                    ->where('lot', 1)
+                    ->where('tp', 3500)
+                    ->where('sl', 3200)
+                    ->where('comment', 'pac')
+                    ->where('magnum', $magnum)
                     ->exists();
 
                 if (!$existingCommand) {
-                    // Nessun comando esistente trovato, inserisci il nuovo record in 'command_queues'
+                    // Inserisci il nuovo record in 'command_queues'
                     DB::table('command_queues')->insert([
                         'istance_key' => $istance_key,
                         'cmd_name' => 'open',
@@ -583,22 +581,23 @@ private function pac($timeframe, $istance_key, $magnum)
                 } else {
                     // Comando esistente trovato, non inserire un nuovo record
                     Log::info('Existing command found, avoiding new command creation.');
-                    return false; // O qualsiasi altra azione che desideri intraprendere
+                    return false;
                 }
             } else {
                 // Record recente trovato, non inserire il nuovo record
                 Log::info('Recent position found, avoiding new command creation.');
-                return false; // O qualsiasi altra azione che desideri intraprendere
+                return false;
             }
         } else {
             // Non sono passati almeno 3 minuti tra il primo e l'ultimo record
             Log::info('Time difference is less than 3 minutes.', ['difference' => $differenceInMinutes]);
-            return false; // O qualsiasi altra azione che desideri intraprendere
+            return false;
         }
     } catch (\Exception $e) {
         Log::error('An error occurred in pac function.', ['error' => $e->getMessage()]);
         return false; // Gestione dell'errore
     }
 }
+
 
 }
