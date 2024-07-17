@@ -523,6 +523,18 @@ private function isLicenseKeyExists($license_key)
 private function pac($timeframe, $istance_key, $magnum)
     {
         try {
+            // Genera una chiave unica per la cache basata sui parametri
+            $cacheKey = "last_command_{$timeframe}_{$istance_key}_{$magnum}";
+
+            // Recupera l'ultimo timestamp del comando dalla cache
+            $lastCommandTime = Cache::get($cacheKey);
+
+            // Verifica se è passato il timeframe specificato dall'ultimo comando
+            if ($lastCommandTime && Carbon::now()->diffInMinutes(Carbon::parse($lastCommandTime)) < $timeframe) {
+                Log::info('Timeframe not elapsed since last command.');
+                return false;
+            }
+
             // Recupera i record dalla tabella 'simble_datas' creati negli ultimi 4 minuti
             $candles = DB::table('simble_datas')
                 ->where('created_at', '>=', Carbon::now('Europe/Rome')->subMinutes(4))
@@ -530,6 +542,7 @@ private function pac($timeframe, $istance_key, $magnum)
 
             // Assicurati di avere almeno due record per fare il confronto
             if ($candles->count() < 2) {
+                Log::info('Not enough data to compare.');
                 return false; // Non ci sono abbastanza dati per fare il confronto
             }
 
@@ -546,23 +559,6 @@ private function pac($timeframe, $istance_key, $magnum)
 
             // Verifica se la differenza di tempo è di almeno 3 minuti
             if ($differenceInMinutes >= 3) {
-                // Genera una chiave unica per la cache basata sui parametri
-                $cacheKey = "command_{$timeframe}_{$istance_key}_{$magnum}";
-
-                // Recupera l'ultimo timestamp del comando dalla cache
-                $lastCommandTime = Cache::get($cacheKey);
-
-                // Verifica se il comando è stato eseguito negli ultimi $timeframe minuti
-                if ($lastCommandTime) {
-                    $lastCommandTime = Carbon::parse($lastCommandTime);
-                    $timeSinceLastCommand = $lastCommandTime->diffInMinutes(Carbon::now('Europe/Rome'));
-
-                    if ($timeSinceLastCommand < $timeframe) {
-                        Log::info('Command recently executed. Skipping new command creation.', ['time_since_last' => $timeSinceLastCommand]);
-                        return false;
-                    }
-                }
-
                 // Controlla se ci sono record in 'istance_open_positions' creati negli ultimi 3 minuti
                 $recentPosition = DB::table('istance_open_positions')
                     ->where('created_at', '>=', Carbon::now('Europe/Rome')->subMinutes(3))
@@ -595,8 +591,8 @@ private function pac($timeframe, $istance_key, $magnum)
                             'created_at' => Carbon::now('Europe/Rome')
                         ]);
 
-                        // Salva il timestamp del comando nella cache con una durata di $timeframe minuti
-                        Cache::put($cacheKey, Carbon::now('Europe/Rome')->toDateTimeString(), $timeframe);
+                        // Salva l'ora corrente nella cache come timestamp dell'ultimo comando eseguito
+                        Cache::put($cacheKey, Carbon::now(), Carbon::now()->addMinutes($timeframe));
 
                         Log::info('Command inserted successfully.', ['istance_key' => $istance_key]);
                         return true;
