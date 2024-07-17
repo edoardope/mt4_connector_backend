@@ -551,20 +551,40 @@ private function pac($timeframe, $istance_key, $magnum)
                 ->exists();
 
             if (!$recentPosition) {
-                // Nessun record recente trovato, inserisci il nuovo record in 'command_queues'
-                DB::table('command_queues')->insert([
-                    'istance_key' => $istance_key,
-                    'cmd_name' => "open",
-                    'side' => 0,
-                    'lot' => 1,
-                    'tp' => 3500,
-                    'sl' => 3200,
-                    'comment' => 'pac',
-                    'magnum' => $magnum,
-                    'created_at' => Carbon::now('Europe/Rome')
-                ]);
-                Log::info('Command inserted successfully.', ['istance_key' => $istance_key]);
-                return true;
+                // Controlla se esiste già un comando con i parametri specificati
+                $existingCommand = DB::table('command_queues')
+                    ->where([
+                        ['istance_key', '=', $istance_key],
+                        ['cmd_name', '=', 'open'],
+                        ['side', '=', 0],
+                        ['lot', '=', 1],
+                        ['tp', '=', 3500],
+                        ['sl', '=', 3200],
+                        ['comment', '=', 'pac'],
+                        ['magnum', '=', $magnum]
+                    ])
+                    ->exists();
+
+                if (!$existingCommand) {
+                    // Nessun comando esistente trovato, inserisci il nuovo record in 'command_queues'
+                    DB::table('command_queues')->insert([
+                        'istance_key' => $istance_key,
+                        'cmd_name' => 'open',
+                        'side' => 0,
+                        'lot' => 1,
+                        'tp' => 3500,
+                        'sl' => 3200,
+                        'comment' => 'pac',
+                        'magnum' => $magnum,
+                        'created_at' => Carbon::now('Europe/Rome')
+                    ]);
+                    Log::info('Command inserted successfully.', ['istance_key' => $istance_key]);
+                    return true;
+                } else {
+                    // Comando esistente trovato, non inserire un nuovo record
+                    Log::info('Existing command found, avoiding new command creation.');
+                    return false; // O qualsiasi altra azione che desideri intraprendere
+                }
             } else {
                 // Record recente trovato, non inserire il nuovo record
                 Log::info('Recent position found, avoiding new command creation.');
@@ -580,4 +600,5 @@ private function pac($timeframe, $istance_key, $magnum)
         return false; // Gestione dell'errore
     }
 }
+
 }
