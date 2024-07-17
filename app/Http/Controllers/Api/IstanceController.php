@@ -164,7 +164,7 @@ public function market(Request $request)
 
     // Estrai il license_key e la version dall'array associativo
     $license_key = $data['license_key'] ?? null;
-    $symbol_data = $data['symbol_data'] ?? null;
+    // $symbol_data = $data['symbol_data'] ?? null;
     $account_data = $data['account_data'] ?? null;
     $open_position = $data['open_position'] ?? null;
 
@@ -194,27 +194,27 @@ public function market(Request $request)
          ]);
 
         // Creare una nuova entità simble_datas
-        if ($symbol_data) {
-            DB::table('simble_datas')->insert([
-                'istance_key' => $license_key,
-                'simble_name' => $symbol_data['symbol_name'] ?? null,
-                'current_ask' => $symbol_data['current_ask'] ?? null,
-                'current_bid' => $symbol_data['current_bid'] ?? null,
-                'current_spread' => $symbol_data['current_spread'] ?? null,
-                'trading_is_active' => $symbol_data['trading_is_active'] ?? null,
-                'time_frame' => $symbol_data['time_frame'] ?? null,
-                'open' => $symbol_data['open'] ?? null,
-                'current_high' => $symbol_data['current_high'] ?? null,
-                'current_low' => $symbol_data['current_low'] ?? null,
-                'past_candle_json' => $symbol_data['past_candle_json'] ?? null,
-                'created_at' => Carbon::now('Europe/Rome')
-            ]);
+        // if ($symbol_data) {
+        //     DB::table('simble_datas')->insert([
+        //         'istance_key' => $license_key,
+        //         'simble_name' => $symbol_data['symbol_name'] ?? null,
+        //         'current_ask' => $symbol_data['current_ask'] ?? null,
+        //         'current_bid' => $symbol_data['current_bid'] ?? null,
+        //         'current_spread' => $symbol_data['current_spread'] ?? null,
+        //         'trading_is_active' => $symbol_data['trading_is_active'] ?? null,
+        //         'time_frame' => $symbol_data['time_frame'] ?? null,
+        //         'open' => $symbol_data['open'] ?? null,
+        //         'current_high' => $symbol_data['current_high'] ?? null,
+        //         'current_low' => $symbol_data['current_low'] ?? null,
+        //         'past_candle_json' => $symbol_data['past_candle_json'] ?? null,
+        //         'created_at' => Carbon::now('Europe/Rome')
+        //     ]);
 
-            // Log the insertion
-            Log::info('Symbol data inserted successfully:', ['license_key' => $license_key]);
-        } else {
-            Log::warning('Symbol data is missing in the request:', ['license_key' => $license_key]);
-        }
+        //     // Log the insertion
+        //     Log::info('Symbol data inserted successfully:', ['license_key' => $license_key]);
+        // } else {
+        //     Log::warning('Symbol data is missing in the request:', ['license_key' => $license_key]);
+        // }
 
         Log::info('checking for account data:', ['license_key' => $license_key]);
 
@@ -343,6 +343,18 @@ public function market(Request $request)
 }
 
 public function candle(Request $request){
+
+    // Leggi il contenuto della richiesta come stringa JSON
+    $jsonString = $request->getContent();
+
+    // Log the incoming request
+    Log::info('Received candle request:', ['request' => $jsonString]);
+
+    // Remove control characters from the JSON string
+    $jsonStringCleaned = preg_replace('/[\x00-\x1F\x7F]/u', '', $jsonString);
+
+    // Decodifica la stringa JSON in un array associativo
+    $data = json_decode($jsonStringCleaned, true);
 
     $symbol_data = $data['symbol_data'] ?? null;
     $license_key = $data['license_key'] ?? null;
