@@ -571,8 +571,8 @@ private function pac($timeframe, $istance_key, $magnum)
                         ->where('cmd_name', 'open')
                         ->where('side', 0)
                         ->where('lot', 1)
-                        ->where('tp', 3500)
-                        ->where('sl', 3200)
+                        ->where('tp', 70000)
+                        ->where('sl', 50000)
                         ->where('comment', 'pac')
                         ->where('magnum', $magnum)
                         ->exists();
@@ -584,8 +584,8 @@ private function pac($timeframe, $istance_key, $magnum)
                             'cmd_name' => 'open',
                             'side' => 0,
                             'lot' => 1,
-                            'tp' => 3500,
-                            'sl' => 3200,
+                            'tp' => 70000,
+                            'sl' => 50000,
                             'comment' => 'pac',
                             'magnum' => $magnum,
                             'created_at' => Carbon::now('Europe/Rome')
