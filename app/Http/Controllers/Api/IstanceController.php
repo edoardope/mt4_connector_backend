@@ -64,76 +64,76 @@ class IstanceController extends Controller
     }
 }
      
-public function status(Request $request)
-{
-    // Leggi il contenuto della richiesta come stringa JSON
-    $jsonString = $request->getContent();
+// public function status(Request $request)
+// {
+//     // Leggi il contenuto della richiesta come stringa JSON
+//     $jsonString = $request->getContent();
 
-    // Log the incoming request
-    Log::info('Received status request:', ['request' => $jsonString]);
+//     // Log the incoming request
+//     Log::info('Received status request:', ['request' => $jsonString]);
 
-    // Remove control characters from the JSON string
-    $jsonStringCleaned = preg_replace('/[\x00-\x1F\x7F]/u', '', $jsonString);
+//     // Remove control characters from the JSON string
+//     $jsonStringCleaned = preg_replace('/[\x00-\x1F\x7F]/u', '', $jsonString);
 
-    // Decodifica la stringa JSON in un array associativo
-    $data = json_decode($jsonStringCleaned, true);
+//     // Decodifica la stringa JSON in un array associativo
+//     $data = json_decode($jsonStringCleaned, true);
 
-    // Check if json_decode was successful
-    if (json_last_error() !== JSON_ERROR_NONE) {
-        Log::error('JSON decode error: ' . json_last_error_msg());
+//     // Check if json_decode was successful
+//     if (json_last_error() !== JSON_ERROR_NONE) {
+//         Log::error('JSON decode error: ' . json_last_error_msg());
 
-        return response()->json([
-            'success' => false,
-            'message' => 'Invalid JSON format.'
-        ], 400);
-    }
+//         return response()->json([
+//             'success' => false,
+//             'message' => 'Invalid JSON format.'
+//         ], 400);
+//     }
 
-    // Log the decoded data
-    Log::info('Decoded JSON data:', ['data' => $data]);
+//     // Log the decoded data
+//     Log::info('Decoded JSON data:', ['data' => $data]);
 
-    // Estrai il license_key e la version dall'array associativo
-    $license_key = $data['license_key'] ?? null;
-    $version = $data['version'] ?? null;
+//     // Estrai il license_key e la version dall'array associativo
+//     $license_key = $data['license_key'] ?? null;
+//     $version = $data['version'] ?? null;
 
-    // Controlla se license_key è presente
-    if (!$license_key) {
-        Log::warning('License key is missing in the request.');
+//     // Controlla se license_key è presente
+//     if (!$license_key) {
+//         Log::warning('License key is missing in the request.');
 
-        return response()->json([
-            'success' => false,
-            'message' => 'License key is required.'
-        ], 400);
-    }
+//         return response()->json([
+//             'success' => false,
+//             'message' => 'License key is required.'
+//         ], 400);
+//     }
 
-    // Cerca il record con license_key uguale a $license_key
-    $istance = DB::table('istances')->where('license_key', $license_key)->first();
+//     // Cerca il record con license_key uguale a $license_key
+//     $istance = DB::table('istances')->where('license_key', $license_key)->first();
 
-    // Controlla se il record esiste
-    if ($istance) {
-        // Aggiorna la colonna status a true e last_contact con la data attuale
-        DB::table('istances')->where('license_key', $license_key)->update([
-            'status' => true,
-            'last_contact' => Carbon::now('Europe/Rome'), // Usa Carbon per ottenere la data attuale
-            'version' => $version
-        ]);
+//     // Controlla se il record esiste
+//     if ($istance) {
+//         // Aggiorna la colonna status a true e last_contact con la data attuale
+//         DB::table('istances')->where('license_key', $license_key)->update([
+//             'status' => true,
+//             'last_contact' => Carbon::now('Europe/Rome'), // Usa Carbon per ottenere la data attuale
+//             'version' => $version
+//         ]);
 
-        Log::info('Status and last_contact updated successfully for license key: ' . $license_key);
+//         Log::info('Status and last_contact updated successfully for license key: ' . $license_key);
 
-        return response()->json([
-            'success' => true,
-            'message' => 'Status and last_contact updated successfully.',
-            'istance' => $istance
-        ]);
-    } else {
-        Log::error('Istance not found for license key: ' . $license_key);
+//         return response()->json([
+//             'success' => true,
+//             'message' => 'Status and last_contact updated successfully.',
+//             'istance' => $istance
+//         ]);
+//     } else {
+//         Log::error('Istance not found for license key: ' . $license_key);
 
-        // Se il record non esiste, ritorna un messaggio di errore
-        return response()->json([
-            'success' => false,
-            'message' => 'Istance not found.'
-        ], 404);
-    }
-}
+//         // Se il record non esiste, ritorna un messaggio di errore
+//         return response()->json([
+//             'success' => false,
+//             'message' => 'Istance not found.'
+//         ], 404);
+//     }
+// }
 
 public function market(Request $request)
 {
@@ -333,6 +333,59 @@ public function market(Request $request)
         'message' => 'Istance not found.'
     ], 404);
 }
+
+public function candle(Request $request){
+
+    $symbol_data = $data['symbol_data'] ?? null;
+    $license_key = $data['license_key'] ?? null;
+
+    $istance = DB::table('istances')->where('license_key', $license_key)->first();
+
+    // Controlla se il record esiste
+    if ($istance) {
+
+        if ($symbol_data) {
+            DB::table('simble_datas')->insert([
+                'istance_key' => $license_key,
+                'simble_name' => $symbol_data['symbol_name'] ?? null,
+                'current_ask' => $symbol_data['current_ask'] ?? null,
+                'current_bid' => $symbol_data['current_bid'] ?? null,
+                'current_spread' => $symbol_data['current_spread'] ?? null,
+                'trading_is_active' => $symbol_data['trading_is_active'] ?? null,
+                'time_frame' => $symbol_data['time_frame'] ?? null,
+                'open' => $symbol_data['open'] ?? null,
+                'current_high' => $symbol_data['current_high'] ?? null,
+                'current_low' => $symbol_data['current_low'] ?? null,
+                'past_candle_json' => $symbol_data['past_candle_json'] ?? null,
+                'first' => $symbol_data['first'] ?? null,
+                'created_at' => Carbon::now('Europe/Rome')
+            ]);
+    
+            // Log the insertion
+            Log::info('Symbol data inserted successfully:', ['license_key' => $license_key]);
+
+            $existingRecord = DB::table('istance_settings')
+                    ->where('istance_key', $license_key)
+                    ->first();
+
+            return response()->json([
+                'success' => true,
+                'symbol' => $existingRecord->active_simble,
+                'timeframe' => $existingRecord->timeframe,
+                'market' => $existingRecord->market_refresh_rate
+            ]);
+
+        } else {
+            Log::warning('Symbol data is missing in the request:', ['license_key' => $license_key]);
+        }   return response()->json([
+            'success' => false,
+            'message' => "simble data not recognize",
+        ]);
+    }else{
+        Log::info('no license found!');
+    }
+}
+
 
 public function history(Request $request)
 {

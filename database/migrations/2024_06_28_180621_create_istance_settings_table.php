@@ -14,8 +14,10 @@ return new class extends Migration
         Schema::create('istance_settings', function (Blueprint $table) {
             $table->id();
             $table->string('istance_key');
-            $table->string('market_refresh_rate');
-            $table->string('status_refresh_rate');
+            $table->string('market_refresh_rate')->nullable();
+            $table->string('status_refresh_rate')->nullable();
+            $table->string('active_simble')->nullable();
+            $table->string('timeframe')->nullable();
             $table->timestamps();
 
             $table->foreign('istance_key')->references('license_key')->on('istances')->onDelete('cascade');
