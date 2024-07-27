@@ -140,8 +140,8 @@ class IstanceController extends Controller
 public function market(Request $request)
 {
       // Inizializza e esegui la strategia
-      $strategy = new Alpha();
-      $strategy->execute($symbol);
+    //   $strategy = new Alpha();
+    //   $strategy->execute($symbol);
     
     // Leggi il contenuto della richiesta come stringa JSON
     $jsonString = $request->getContent();
@@ -371,7 +371,7 @@ public function candle(Request $request){
     if ($istance) {
 
         if ($symbol_data) {
-            
+
             if ($symbol_data['first'] ?? false) {
                 DB::table('simble_datas')
                     ->where('simble_name', $symbol_data['symbol_name'])
