@@ -373,10 +373,15 @@ public function candle(Request $request){
         if ($symbol_data) {
 
             if ($symbol_data['first'] ?? false) {
+
                 DB::table('simble_datas')
-                    ->where('simble_name', $symbol_data['symbol_name'])
-                    ->where('istance_key', $license_key)
+                    ->where(function ($query) use ($symbol_data, $license_key) {
+                        $query->where('simble_name', $symbol_data['symbol_name'])
+                              ->where('istance_key', $license_key);
+                    })
+                    ->orWhere('simble_name', 'no_symbol_active')
                     ->delete();
+
             }
 
             DB::table('simble_datas')->insert([
