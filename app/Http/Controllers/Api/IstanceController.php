@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Cache;
+use App\TradingService\Alpha;
 
 use Illuminate\Support\Facades\DB;
 
@@ -138,6 +139,10 @@ class IstanceController extends Controller
 
 public function market(Request $request)
 {
+      // Inizializza e esegui la strategia
+    //   $strategy = new Alpha();
+    //   $strategy->execute($symbol);
+    
     // Leggi il contenuto della richiesta come stringa JSON
     $jsonString = $request->getContent();
 
@@ -179,7 +184,7 @@ public function market(Request $request)
         ], 400);
     }
 
-    $this->pac(1, $license_key, 1);
+    //$this->pac(1, $license_key, 1);
 
     // Cerca il record con license_key uguale a $license_key
     $istance = DB::table('istances')->where('license_key', $license_key)->first();
@@ -366,6 +371,14 @@ public function candle(Request $request){
     if ($istance) {
 
         if ($symbol_data) {
+
+            if ($symbol_data['first'] ?? false) {
+                DB::table('simble_datas')
+                    ->where('simble_name', $symbol_data['symbol_name'])
+                    ->where('istance_key', $license_key)
+                    ->delete();
+            }
+
             DB::table('simble_datas')->insert([
                 'istance_key' => $license_key,
                 'simble_name' => $symbol_data['symbol_name'] ?? null,
@@ -385,6 +398,7 @@ public function candle(Request $request){
             // Log the insertion
             Log::info('Symbol data inserted successfully:', ['license_key' => $license_key]);
 
+            //ritorno dei settings dell'istanza
             $existingRecord = DB::table('istance_settings')
                     ->where('istance_key', $license_key)
                     ->first();
@@ -520,102 +534,102 @@ private function isLicenseKeyExists($license_key)
 }
 
 
-private function pac($timeframe, $istance_key, $magnum)
-    {
-        try {
-            // Genera una chiave unica per la cache basata sui parametri
-            $cacheKey = "last_command_{$timeframe}_{$istance_key}_{$magnum}";
+// private function pac($timeframe, $istance_key, $magnum)
+//     {
+//         try {
+//             // Genera una chiave unica per la cache basata sui parametri
+//             $cacheKey = "last_command_{$timeframe}_{$istance_key}_{$magnum}";
 
-            // Recupera l'ultimo timestamp del comando dalla cache
-            $lastCommandTime = Cache::get($cacheKey);
+//             // Recupera l'ultimo timestamp del comando dalla cache
+//             $lastCommandTime = Cache::get($cacheKey);
 
-            // Verifica se è passato il timeframe specificato dall'ultimo comando
-            if ($lastCommandTime && Carbon::now()->diffInMinutes(Carbon::parse($lastCommandTime)) < $timeframe) {
-                Log::info('Timeframe not elapsed since last command.');
-                return false;
-            }
+//             // Verifica se è passato il timeframe specificato dall'ultimo comando
+//             if ($lastCommandTime && Carbon::now()->diffInMinutes(Carbon::parse($lastCommandTime)) < $timeframe) {
+//                 Log::info('Timeframe not elapsed since last command.');
+//                 return false;
+//             }
 
-            // Recupera i record dalla tabella 'simble_datas' creati negli ultimi 4 minuti
-            $candles = DB::table('simble_datas')
-                ->where('created_at', '>=', Carbon::now('Europe/Rome')->subMinutes(4))
-                ->get();
+//             // Recupera i record dalla tabella 'simble_datas' creati negli ultimi 4 minuti
+//             $candles = DB::table('simble_datas')
+//                 ->where('created_at', '>=', Carbon::now('Europe/Rome')->subMinutes(4))
+//                 ->get();
 
-            // Assicurati di avere almeno due record per fare il confronto
-            if ($candles->count() < 2) {
-                Log::info('Not enough data to compare.');
-                return false; // Non ci sono abbastanza dati per fare il confronto
-            }
+//             // Assicurati di avere almeno due record per fare il confronto
+//             if ($candles->count() < 2) {
+//                 Log::info('Not enough data to compare.');
+//                 return false; // Non ci sono abbastanza dati per fare il confronto
+//             }
 
-            // Ottieni il primo e l'ultimo record
-            $firstCandle = $candles->first();
-            $lastCandle = $candles->last();
+//             // Ottieni il primo e l'ultimo record
+//             $firstCandle = $candles->first();
+//             $lastCandle = $candles->last();
 
-            // Calcola la differenza di tempo in minuti tra il primo e l'ultimo record
-            $firstTime = Carbon::parse($firstCandle->created_at);
-            $lastTime = Carbon::parse($lastCandle->created_at);
-            $differenceInMinutes = $firstTime->diffInMinutes($lastTime);
+//             // Calcola la differenza di tempo in minuti tra il primo e l'ultimo record
+//             $firstTime = Carbon::parse($firstCandle->created_at);
+//             $lastTime = Carbon::parse($lastCandle->created_at);
+//             $differenceInMinutes = $firstTime->diffInMinutes($lastTime);
 
-            Log::info('Difference in minutes: ' . $differenceInMinutes);
+//             Log::info('Difference in minutes: ' . $differenceInMinutes);
 
-            // Verifica se la differenza di tempo è di almeno 3 minuti
-            if ($differenceInMinutes >= 3) {
-                // Controlla se ci sono record in 'istance_open_positions' creati negli ultimi 3 minuti
-                $recentPosition = DB::table('istance_open_positions')
-                    ->where('created_at', '>=', Carbon::now('Europe/Rome')->subMinutes(3))
-                    ->exists();
+//             // Verifica se la differenza di tempo è di almeno 3 minuti
+//             if ($differenceInMinutes >= 3) {
+//                 // Controlla se ci sono record in 'istance_open_positions' creati negli ultimi 3 minuti
+//                 $recentPosition = DB::table('istance_open_positions')
+//                     ->where('created_at', '>=', Carbon::now('Europe/Rome')->subMinutes(3))
+//                     ->exists();
 
-                if (!$recentPosition) {
-                    // Controlla se esiste già un comando con i parametri specificati
-                    $existingCommand = DB::table('command_queues')
-                        ->where('istance_key', $istance_key)
-                        ->where('cmd_name', 'open')
-                        ->where('side', 0)
-                        ->where('lot', 1)
-                        ->where('tp', 70000)
-                        ->where('sl', 50000)
-                        ->where('comment', 'pac')
-                        ->where('magnum', $magnum)
-                        ->exists();
+//                 if (!$recentPosition) {
+//                     // Controlla se esiste già un comando con i parametri specificati
+//                     $existingCommand = DB::table('command_queues')
+//                         ->where('istance_key', $istance_key)
+//                         ->where('cmd_name', 'open')
+//                         ->where('side', 0)
+//                         ->where('lot', 1)
+//                         ->where('tp', 70000)
+//                         ->where('sl', 50000)
+//                         ->where('comment', 'pac')
+//                         ->where('magnum', $magnum)
+//                         ->exists();
 
-                    if (!$existingCommand) {
-                        // Inserisci il nuovo record in 'command_queues'
-                        DB::table('command_queues')->insert([
-                            'istance_key' => $istance_key,
-                            'cmd_name' => 'open',
-                            'side' => 0,
-                            'lot' => 1,
-                            'tp' => 70000,
-                            'sl' => 50000,
-                            'comment' => 'pac',
-                            'magnum' => $magnum,
-                            'created_at' => Carbon::now('Europe/Rome')
-                        ]);
+//                     if (!$existingCommand) {
+//                         // Inserisci il nuovo record in 'command_queues'
+//                         DB::table('command_queues')->insert([
+//                             'istance_key' => $istance_key,
+//                             'cmd_name' => 'open',
+//                             'side' => 0,
+//                             'lot' => 1,
+//                             'tp' => 70000,
+//                             'sl' => 50000,
+//                             'comment' => 'pac',
+//                             'magnum' => $magnum,
+//                             'created_at' => Carbon::now('Europe/Rome')
+//                         ]);
 
-                        // Salva l'ora corrente nella cache come timestamp dell'ultimo comando eseguito
-                        Cache::put($cacheKey, Carbon::now(), Carbon::now()->addMinutes($timeframe));
+//                         // Salva l'ora corrente nella cache come timestamp dell'ultimo comando eseguito
+//                         Cache::put($cacheKey, Carbon::now(), Carbon::now()->addMinutes($timeframe));
 
-                        Log::info('Command inserted successfully.', ['istance_key' => $istance_key]);
-                        return true;
-                    } else {
-                        // Comando esistente trovato, non inserire un nuovo record
-                        Log::info('Existing command found, avoiding new command creation.');
-                        return false;
-                    }
-                } else {
-                    // Record recente trovato, non inserire il nuovo record
-                    Log::info('Recent position found, avoiding new command creation.');
-                    return false;
-                }
-            } else {
-                // Non sono passati almeno 3 minuti tra il primo e l'ultimo record
-                Log::info('Time difference is less than 3 minutes.', ['difference' => $differenceInMinutes]);
-                return false;
-            }
-        } catch (\Exception $e) {
-            Log::error('An error occurred in pac function.', ['error' => $e->getMessage()]);
-            return false; // Gestione dell'errore
-        }
-    }
+//                         Log::info('Command inserted successfully.', ['istance_key' => $istance_key]);
+//                         return true;
+//                     } else {
+//                         // Comando esistente trovato, non inserire un nuovo record
+//                         Log::info('Existing command found, avoiding new command creation.');
+//                         return false;
+//                     }
+//                 } else {
+//                     // Record recente trovato, non inserire il nuovo record
+//                     Log::info('Recent position found, avoiding new command creation.');
+//                     return false;
+//                 }
+//             } else {
+//                 // Non sono passati almeno 3 minuti tra il primo e l'ultimo record
+//                 Log::info('Time difference is less than 3 minutes.', ['difference' => $differenceInMinutes]);
+//                 return false;
+//             }
+//         } catch (\Exception $e) {
+//             Log::error('An error occurred in pac function.', ['error' => $e->getMessage()]);
+//             return false; // Gestione dell'errore
+//         }
+//     }
 
 
 }
