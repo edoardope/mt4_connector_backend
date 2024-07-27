@@ -371,6 +371,14 @@ public function candle(Request $request){
     if ($istance) {
 
         if ($symbol_data) {
+            
+            if ($symbol_data['first'] ?? false) {
+                DB::table('simble_datas')
+                    ->where('simble_name', $symbol_data['symbol_name'])
+                    ->where('istance_key', $license_key)
+                    ->delete();
+            }
+
             DB::table('simble_datas')->insert([
                 'istance_key' => $license_key,
                 'simble_name' => $symbol_data['symbol_name'] ?? null,
@@ -390,6 +398,7 @@ public function candle(Request $request){
             // Log the insertion
             Log::info('Symbol data inserted successfully:', ['license_key' => $license_key]);
 
+            //ritorno dei settings dell'istanza
             $existingRecord = DB::table('istance_settings')
                     ->where('istance_key', $license_key)
                     ->first();
