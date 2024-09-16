@@ -34,6 +34,19 @@ class TradingHandler
         ]);
     }
 
+    public function modifyOrder($istance_key, $ticket, $tp, $sl){
+
+        DB::table('command_queues')->insert([
+            'istance_key' => $istance_key,
+            'cmd_name' => 'modify',
+            'ticket' => $ticket,
+            'tp' => $tp,
+            'sl' => $sl,
+            'created_at' => Carbon::now('Europe/Rome')
+        ]);
+
+    }
+
     public function WaveTrendLB($istance_key, $symbol, $Clenght, $Alenght, $ObLevel1, $ObLevel2, $OsLevel1, $OsLevel2){
 
         // Recupera la data o il timestamp della candela con `first` a `true`
